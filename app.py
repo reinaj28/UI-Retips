@@ -1,4 +1,3 @@
-"Front end work for app"
 import os
 import streamlit as st
 import RAG_chain as rc
@@ -11,6 +10,13 @@ from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_community.llms import Ollama
 from langchain_core.messages import AIMessage, HumanMessage
 import ollama
+
+# Load local CSS
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+local_css("styles.css")  # Make sure styles.css is in the same directory as app.py
 
 chunk_type = "Recursive"
 chunk_size = 800

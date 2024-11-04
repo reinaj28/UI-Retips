@@ -1,2 +1,48 @@
-//CSS file 
+/* General page styling , This is just a basic front end styling for testing purpose
+it is subject to change*/
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f7f7f7;
+}
 
+/* Title styling */
+h1 {
+    color: #2e7bcf;
+    font-size: 2.5em;
+}
+
+/* Sidebar styling */
+.stSidebar {
+    background-color: #f0f0f5;
+    padding: 20px;
+}
+
+/* Chat bubble styling */
+.chat-message {
+    padding: 10px;
+    border-radius: 15px;
+    margin: 5px 0;
+}
+
+.chat-message-human {
+    background-color: #cce5ff;
+    text-align: right;
+}
+
+.chat-message-ai {
+    background-color: #d4edda;
+    text-align: left;
+}
+
+/* Input box styling */
+.stInput {
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Spinner styling */
+.stSpinner {
+    color: #2e7bcf;
+}
