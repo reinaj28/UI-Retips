@@ -1,8 +1,14 @@
-import os
 import streamlit as st
-import RAG_chain as rc
-import wiki_scrape as ws
+
+# Set page configuration immediately after the import
+st.set_page_config(page_title="Chat with a Star Wars expert", page_icon="🦜")
+
+import os
+#import RAG_chain as rc
+import RAG as rc
+#import wiki_scrape as ws
 import re
+
 
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.runnables.history import RunnableWithMessageHistory
@@ -11,12 +17,16 @@ from langchain_community.llms import Ollama
 from langchain_core.messages import AIMessage, HumanMessage
 import ollama
 
-# Load local CSS
+# Function to load local CSS
 def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    css_path = os.path.join(os.path.dirname(__file__), file_name)
+    if os.path.exists(css_path):
+        with open(css_path) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    else:
+        st.error(f"CSS file '{file_name}' not found. Make sure it’s in the same directory as 'app.py'.")
 
-local_css("styles.css")  # Make sure styles.css is in the same directory as app.py
+local_css("styles.css")
 
 chunk_type = "Recursive"
 chunk_size = 800
@@ -156,7 +166,7 @@ def update_answer_model():
     )
 
 
-st.set_page_config(page_title="Chat with a Star Wars expert", page_icon="🦜")
+##st.set_page_config(page_title="Chat with a Star Wars expert", page_icon="🦜")
 st.title("_Chat_ with :blue[A Star Wars Expert] 🤖")
 
 # Initially, the dropdown menus for the answering and summarizarion model are disabled.
