@@ -2,10 +2,9 @@ import os, os.path
 import shutil
 import pathlib
 import streamlit as st
-#from simplified_rag.RAG import generate_answer 
-from UI-Retips import get_embeddings.py
-from UI-Retips import create_prompt.py
-from UI-Retips import query_for_results.py
+import get_embeddings.py
+import create_prompt.py
+import query_for_results.py
 
 
 st.title("Hospital Incident Reports")
