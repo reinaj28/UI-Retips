@@ -2,9 +2,9 @@ import os, os.path
 import shutil
 import pathlib
 import streamlit as st
-import get_embeddings.py
-import create_prompt.py
-import query_for_results.py
+import get_embeddings 
+import create_prompt
+import query_for_results 
 
 
 st.title("Hospital Incident Reports")
@@ -23,40 +23,74 @@ target_folder.mkdir(parents=True, exist_ok=True)
 # activating selection box for user choice 
 options = False
 emp = st.empty()
-vari = "Hospital Reports"
+vari = emp.selectbox(
+    key = "Options",
+    label = "Please select the file type:",
+    options = ("CVS", "JSON")
 )
 
 if st.button("Select"):
     choice = vari
     options = True
 
-def research_choice() -> str:
+#CVS File type choice
+def csv_choice() -> str:
+    with st.form(key="doc_upload", clear_on_submit=False):
+
+        uploaded_doc = st.file_uploader(
+            label="Please upload your document",
+            accept_multiple_files = False,
+            type=['csv']
+        )
+        get_embeddings.load_data_to_dataframe(uploaded_doc)
+
+        create_prompt.main(uploaded_doc)
+
+        submit_button1 = st.form_submit_button("Load Document")
+
+    if submit_button1:
+        with open(os.path.join(target_folder, uploaded_doc.name), 'wb') as f:
+            f.write(uploaded_doc.getbuffer())
+        return
+
+#JSON File type choice
+def json_choice() -> str:
     
     with st.form(key="doc_upload", clear_on_submit=False):
 
-        doc_key = st.text_innput(
-            label="Please detail specific columns or key to answer query",
-            max_chars = 256
-        )
-        
-        research_query = st.text_input(
-            label = "Enter Question",
-            max_chars = 256
-        )
+        uploaded_doc = st.file_uploader(
+            label="Please upload your document",
+            accept_multiple_files = False,
+            type=['JSON']
+        ) 
+        get_embeddings.load_data_to_dataframe(uploaded_doc)
+
+        create_prompt.main(uploaded_doc)
+
         submit_button1 = st.form_submit_button("Load Document")
 
-    if submit_button1: #We dont have a file to upload just a key to look through every file
+    if submit_button1:
         with open(os.path.join(target_folder, uploaded_doc.name), 'wb') as f:
             f.write(uploaded_doc.getbuffer())
-        return research_query
-
+        return 
 
 def main(selection):
-        research_query = research_choice()
+    if selection == "CSV":
+        csv_query = csv_choice()
 
-        if research_query is not None:
+        if csv_query is not None:
             with st.spinner("Processing your request..."):
-                answer = generate_answer(selection, research_query)
+                answer = query_for_results.main() 
+
+                st.success("Data processing complete!")
+                st.markdown(f"###### {answer['result']}")
+
+    elif selection == "JSON":
+        json_query = json_choice()
+
+        if json_query is not None:
+            with st.spinner("Processing your request..."):
+                answer = query_for_results.main()
 
                 st.success("Data processing complete!")
                 st.write(answer['result'])
