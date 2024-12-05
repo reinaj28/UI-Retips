@@ -25,21 +25,17 @@ vari = emp.selectbox(
     options = ("RETIPS", "Incident Report","Patient Feedabck")
 )
 #need to import data_set
-get_embeddings(data_fixed.JSON) #Fix the dataset path
-
-research_query = st.text_input(
-    label="Please input what you want to search",
+dataSet = st.text_input(
+    label="Please input data path",
     max_chars=256
 )
-create_prompt(research_query) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
+
+get_embeddings() <dataSet> #Fix the dataset path
+
+create_prompt() #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
 
 rag_output = query_for_results() #the output from query_for_results should be the output
 
-#where is the data written in the output, then search for the index 
-data_index = st.text_input(
-    label="The data index that mentioned in the output",
-    #max_chars=256
-)
 
 #We need to save the data somewhere
 feed = st.empty()
