@@ -7,6 +7,7 @@ import streamlit as st
 #import get_embeddings #This will get the documents 
 #import create_prompt # this program will create the question to go intp query_for_results
 #import query_for_results # This program will create the final output
+import RETIPS
 
 st.title("Hospital Reports Analysis RAG Framework UI")
 
@@ -22,7 +23,7 @@ emp = st.empty()
 typeQuery = emp.selectbox(
     key = "Options",
     label = "Please select the reference data for query running:",
-    options = ("Incident Report","Patient Feedback")
+    options = ("Retips","Incident Report","Patient Feedback")
 )
 
 if typeQuery =="Incident Report":
@@ -32,7 +33,7 @@ if typeQuery =="Incident Report":
         max_chars=256
     )
 
-    columnVal = st.input(
+    columnVal = st.text_input(
         label="What column number is data in?",
     )
 
@@ -43,7 +44,7 @@ if typeQuery =="Incident Report":
 
     #get_embeddings(dataSet, column Value)  #Fix the dataset path
 
-    exampleNum = st.input(
+    exampleNum = st.text_input(
         label="Please input how many examples you would like in output",
     )
     #create_prompt(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
@@ -52,23 +53,52 @@ if typeQuery =="Incident Report":
     #st.text(rag_output)
 
 
-if typeQuery == "Patient Feedback":
-#We need to save the data somewhere
-    feed = st.empty()
-    vari = feed.selectbox(
-        key = "Feedback",
-        label = "Are you satisfied with the RAG output?",
-        options = ("Yes", "No")
-    )
-
-    feedback = st.text_input(
-        label="Please leave any comments about the RAG output",
+if typeQuery =="Patient Feedback":
+    #need to import data_set
+    dataSet = st.text_input(
+        label="Please input data path",
         max_chars=256
     )
-    file.writerow([vari, feedback])
 
-    st.text("Thank you for your feedback on our Hospital Reports Analysis RAG Framework")
+    columnVal = st.text_input(
+        label="What column number is data in?",
+    )
 
+    query = st.text_input(
+        label="Please input your question",
+        max_chars=256
+    )
 
+    #get_embeddings(dataSet, column Value)  #Fix the dataset path
 
+    exampleNum = st.text_input(
+        label="Please input how many examples you would like in output",
+    )
+    #create_prompt(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
+
+    #rag_output = query_for_results() #the output from query_for_results should be the output
+    #st.text(rag_output)
+
+if typeQuery =="Retips":
+    #need to import data_set
+    dataSet = RETIPS.xlsx
+
+    columnVal = st.text_input(
+        label="What column number is data in?",
+    )
+
+    query = st.text_input(
+        label="Please input your question",
+        max_chars=256
+    )
+
+    #get_embeddings(dataSet, column Value)  #Fix the dataset path
+
+    exampleNum = st.text_input(
+        label="Please input how many examples you would like in output",
+    )
+    #create_prompt(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
+
+    #rag_output = query_for_results() #the output from query_for_results should be the output
+    #st.text(rag_output)
 
