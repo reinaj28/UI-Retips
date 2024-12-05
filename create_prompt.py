@@ -13,28 +13,22 @@ def read_file(file_path):
         print("Unsupported file format. Please provide a CSV or JSON file.")
         return None
     
-def process_relevance_query(df):
-    column = input("Enter the name of the column with the relevant information for generating similarity scores: ")
+def process_relevance_query(df, columnVal):
+    column = columnVal
     
     # Get list of data from chosen column
     return df[column].tolist()
     
-def get_relevance_query():
+def get_relevance_query(dataPath):
     # Check if a command line argument is provided
-    if len(sys.argv) > 1:
-        file_path = sys.argv[1]
-        dataframe = read_file(file_path)
+    
+        dataframe = read_file(dataPath)
         if dataframe is not None:
             print("File successfully read into DataFrame.")
             
             return dataframe
         else:
             print("Failed to read the file into DataFrame.")
-    else:
-        # Prompt the user for a relevance query if no command line argument is provided
-        relevance_query = input("No file provided. Please enter a relevance query: ")
-        
-        return relevance_query
     
 def load_saved_vector_store(cache_loc,
                             embedding_model_name='sentence-transformers/all-mpnet-base-v2',
@@ -64,7 +58,7 @@ def get_size_of_vector_db(db_embedding):
 
     return num_documents
 
-def generate_similarity_scores():
+def generate_similarity_scores(columnVal):
     # Load in vector store
     username = os.environ.get('USER')
     cache_loc = os.path.join('/','scratch',username,'hf_cache')
@@ -73,7 +67,7 @@ def generate_similarity_scores():
     relevance_query = get_relevance_query()
 
     if isinstance(relevance_query, pd.DataFrame):
-        relevance_data = process_relevance_query(relevance_query)
+        relevance_data = process_relevance_query(relevance_query, columnVal)
 
     else:
         relevance_data = [relevance_query]
@@ -115,9 +109,9 @@ def create_min_scores_df(scores_df):
 
     return result_df
 
-def prepare_data_for_prompt(result_df):
+def prepare_data_for_prompt(result_df, exampleNum):
     # Gather n most relevant examples for prompt
-    n = int(input("Enter the number of relevant examples to have in the prompt: "))
+    n = exampleNum
     relevant_df = result_df.sort_values(by='score', ascending=True).head(n)
     
     return relevant_df
@@ -126,8 +120,8 @@ def define_system_prompt():
     sys_prompt = input("Enter the system prompt: ")
     return sys_prompt
 
-def define_query_prompt():
-    query_prompt = input("Enter the prompt that will be used to query the LLM: ")
+def define_query_prompt(query):
+    query_prompt = query
     return query_prompt
 
 def get_examples(df):
@@ -173,19 +167,19 @@ examples in the prompt to formulate your response. \
     
     return prompt_text
 
-def main():
+def main(exampleNum, question, columnVal ):
     sys_prompt = define_system_prompt()
-    query_prompt = define_query_prompt()
+    query_prompt = define_query_prompt(question)
     
     username = os.environ.get('USER')
     cache_loc = os.path.join('/','scratch',username,'hf_cache')
     db_embedding = load_saved_vector_store(cache_loc)
 
-    scores_df = generate_similarity_scores()
+    scores_df = generate_similarity_scores(columnVal)
     
     result_df = create_min_scores_df(scores_df)
 
-    relevant_df = prepare_data_for_prompt(result_df)
+    relevant_df = prepare_data_for_prompt(result_df, exampleNum)
     
     prompt = create_prompt(sys_prompt, query_prompt, relevant_df)
     

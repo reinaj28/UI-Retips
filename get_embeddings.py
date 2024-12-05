@@ -20,9 +20,9 @@ def load_data_to_dataframe(file_path):
     return df
 
 # Prompt user for a column name and validate it
-def get_valid_column_name(df):
+def get_valid_column_name(df, columnName):
     while True:
-        column_name = input("Please enter the name of the column that contains the page content: ")
+        column_name = columnName
         if column_name in df.columns:
             return column_name
         else:
@@ -96,18 +96,15 @@ def generate_eval_embeddings(df, content_col):
         
     return db_embeddings
 
-def main():
+def main(filePath, columnVal):
     # Check if an argument was provided (1 argument besides the script name)
-    if len(sys.argv) < 2:
-        print("Usage: script.py <data_file>")
-        sys.exit(1)
-
-    data_file = sys.argv[1]  # Get the file location from the command line argument
+    
+    data_file = filePath  # Get the file location from the command line argument
 
     print(f"File location provided: {data_file}")
     
     # Create dataframe from passed in data
-    df = load_data_to_dataframe(data_file)
+    df = load_data_to_dataframe(data_file, columnVal)
     
     content_column = get_valid_column_name(df)
 
