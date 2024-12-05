@@ -32,9 +32,9 @@ if typeQuery =="Incident Report":
         max_chars=256
     )
 
-    columnVal = int(input(
+    columnVal = st.input(
         label="What column number is data in?",
-    ))
+    )
 
     query = st.text_input(
         label="Please input your question",
@@ -43,9 +43,9 @@ if typeQuery =="Incident Report":
 
     #get_embeddings(dataSet, column Value)  #Fix the dataset path
 
-    exampleNum = int(input(
+    exampleNum = st.input(
         label="Please input how many examples you would like in output",
-    ))
+    )
     #create_prompt(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
 
     #rag_output = query_for_results() #the output from query_for_results should be the output
