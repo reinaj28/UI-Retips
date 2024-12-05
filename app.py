@@ -1,102 +1,56 @@
 import os, os.path
 import shutil
 import pathlib
+import csv
 import streamlit as st
-import get_embeddings 
-import create_prompt
-import query_for_results 
+#importing the RAG programs
+import get_embeddings #This will get the documents 
+import create_prompt # this program will create the question to go intp query_for_results
+import query_for_results # This program will create the final output
 
+st.title("Hospital Reports Analysis RAG Framework UI")
 
-st.title("Hospital Incident Reports")
-st.header("AI summarizer")
+file = open('feedback.xlsx', 'w') #opening a file to save user feedback in
+file =  csv.writer(file) #able to write to the file
+file.writerow(['Satisfied', 'Comments'])
 
 if 'selection' not in st.session_state:
     st.session_state.selection = ""
-
-# clearing previously loaded pool of docs
-target_folder = pathlib.Path().absolute()  / "docs/"
-
-if target_folder.exists():
-    shutil.rmtree(target_folder)
-target_folder.mkdir(parents=True, exist_ok=True)
-
-# activating selection box for user choice 
+# activating selection box for user choice
 options = False
 emp = st.empty()
 vari = emp.selectbox(
     key = "Options",
-    label = "Please select the file type:",
-    options = ("CVS", "JSON")
+    label = "Please select the reference data for query running:",
+    options = ("RETIPS", "Incident Report","Patient Feedabck")
+)
+#need to import data_set
+get_embeddings(data_fixed.JSON) #Fix the dataset path
+
+research_query = st.text_input(
+    label="Please input what you want to search",
+    max_chars=256
+)
+create_prompt(research_query) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
+
+rag_output = query_for_results() #the output from query_for_results should be the output
+
+#where is the data written in the output, then search for the index 
+data_index = st.text_input(
+    label="The data index that mentioned in the output",
+    #max_chars=256
 )
 
-if st.button("Select"):
-    choice = vari
-    options = True
+#We need to save the data somewhere
+feed = st.empty()
+vari = feed.selectbox(
+    key = "Feedback",
+    label = "Are you satisfied with the RAG output?",
+    options = ("Yes", "No")
+)
 
-#CVS File type choice
-def csv_choice() -> str:
-    with st.form(key="doc_upload", clear_on_submit=False):
-
-        uploaded_doc = st.file_uploader(
-            label="Please upload your document",
-            accept_multiple_files = False,
-            type=['csv']
-        )
-        get_embeddings.load_data_to_dataframe(uploaded_doc)
-
-        create_prompt.main(uploaded_doc)
-
-        submit_button1 = st.form_submit_button("Load Document")
-
-    if submit_button1:
-        with open(os.path.join(target_folder, uploaded_doc.name), 'wb') as f:
-            f.write(uploaded_doc.getbuffer())
-        return
-
-#JSON File type choice
-def json_choice() -> str:
-    
-    with st.form(key="doc_upload", clear_on_submit=False):
-
-        uploaded_doc = st.file_uploader(
-            label="Please upload your document",
-            accept_multiple_files = False,
-            type=['JSON']
-        ) 
-        get_embeddings.load_data_to_dataframe(uploaded_doc)
-
-        create_prompt.main(uploaded_doc)
-
-        submit_button1 = st.form_submit_button("Load Document")
-
-    if submit_button1:
-        with open(os.path.join(target_folder, uploaded_doc.name), 'wb') as f:
-            f.write(uploaded_doc.getbuffer())
-        return 
-
-def main(selection):
-    if selection == "CSV":
-        csv_query = csv_choice()
-
-        if csv_query is not None:
-            with st.spinner("Processing your request..."):
-                answer = query_for_results.main() 
-
-                st.success("Data processing complete!")
-                st.markdown(f"###### {answer['result']}")
-
-    elif selection == "JSON":
-        json_query = json_choice()
-
-        if json_query is not None:
-            with st.spinner("Processing your request..."):
-                answer = query_for_results.main()
-
-                st.success("Data processing complete!")
-                st.write(answer['result'])
-
-if __name__ == "__main__":
-    if options:
-        st.session_state.selection = choice
-
-    main(st.session_state.selection)
+feedback = st.text_input(
+    label="Please leave any comments about the RAG output",
+    max_chars=256
+)
+file.writerow([vari, feedback])
