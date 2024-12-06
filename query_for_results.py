@@ -11,7 +11,7 @@ def read_prompt():
         
     return prompt
 
-def main():
+def query_for_results_main():
     prompt = read_prompt()
 
     model_name_or_path = "TheBloke/Llama-2-70B-chat-AWQ"

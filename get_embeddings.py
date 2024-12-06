@@ -96,7 +96,7 @@ def generate_eval_embeddings(df, content_col):
         
     return db_embeddings
 
-def main(filePath, columnVal):
+def get_embeddings_main(filePath, columnVal):
     # Check if an argument was provided (1 argument besides the script name)
     
     data_file = filePath  # Get the file location from the command line argument

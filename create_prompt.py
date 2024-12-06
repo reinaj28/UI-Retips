@@ -167,7 +167,7 @@ examples in the prompt to formulate your response. \
     
     return prompt_text
 
-def main(exampleNum, question, columnVal ):
+def create_prompt_main(exampleNum, question, columnVal ):
     sys_prompt = define_system_prompt()
     query_prompt = define_query_prompt(question)
     

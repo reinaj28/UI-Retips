@@ -4,10 +4,10 @@ import pathlib
 import csv
 import streamlit as st
 #importing the RAG programs
-#import get_embeddings #This will get the documents 
-#import create_prompt # this program will create the question to go intp query_for_results
-#import query_for_results # This program will create the final output
-import RETIPS
+from get_embeddings import get_embeddings_main  #This will get the documents 
+from create_prompt import create_prompt_main # this program will create the question to go intp query_for_results
+from query_for_results import query_for_results_main # This program will create the final output
+
 
 st.title("Hospital Reports Analysis RAG Framework UI")
 
@@ -42,15 +42,16 @@ if typeQuery =="Incident Report":
         max_chars=256
     )
 
-    #get_embeddings(dataSet, column Value)  #Fix the dataset path
+
+    get_embeddings_main(dataSet, columnVal)  #Fix the dataset path
 
     exampleNum = st.text_input(
         label="Please input how many examples you would like in output",
     )
-    #create_prompt(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
+    create_prompt_main(exampleNum, query, columnVal) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
 
-    #rag_output = query_for_results() #the output from query_for_results should be the output
-    #st.text(rag_output)
+    rag_output = query_for_results_main() #the output from query_for_results should be the output
+    st.text(rag_output)
 
 
 if typeQuery =="Patient Feedback":
@@ -68,20 +69,21 @@ if typeQuery =="Patient Feedback":
         label="Please input your question",
         max_chars=256
     )
+    
 
-    #get_embeddings(dataSet, column Value)  #Fix the dataset path
+    get_embeddings_main(dataSet, columnVal)  #Fix the dataset path
 
     exampleNum = st.text_input(
         label="Please input how many examples you would like in output",
     )
-    #create_prompt(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
+    create_prompt_main(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
 
-    #rag_output = query_for_results() #the output from query_for_results should be the output
-    #st.text(rag_output)
+    rag_output = query_for_results_main() #the output from query_for_results should be the output
+    st.text(rag_output)
 
 if typeQuery =="Retips":
     #need to import data_set
-    dataSet = RETIPS.xlsx
+    dataSet = "Users\reina\Downloads\RETIPS - Radiology (Responses).xlsx"
 
     columnVal = st.text_input(
         label="What column number is data in?",
@@ -92,13 +94,13 @@ if typeQuery =="Retips":
         max_chars=256
     )
 
-    #get_embeddings(dataSet, column Value)  #Fix the dataset path
+    get_embeddings_main(dataSet, columnVal)  #Fix the dataset path
 
     exampleNum = st.text_input(
         label="Please input how many examples you would like in output",
     )
-    #create_prompt(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
+    create_prompt_main(exampleNum, query, columnVal ) #create_prompt doesn't intake any values, so maybe the previous question is unnecesary
 
-    #rag_output = query_for_results() #the output from query_for_results should be the output
-    #st.text(rag_output)
+    rag_output = query_for_results_main() #the output from query_for_results should be the output
+    st.text(rag_output)
 
